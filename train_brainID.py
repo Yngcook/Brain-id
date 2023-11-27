@@ -79,13 +79,6 @@ class EEGDataModule(pl.LightningDataModule):
         self.json_file = json_file
         self.batch_size = batch_size
 
-    # def setup(self, stage=None):
-    #   if stage == 'fit' or stage is None:
-    #     self.dataset = EEGDataset(self.data_dir, self.json_file)
-
-    #   if stage == 'test' or stage is None:
-    #     self.dataset_test = [EEGDataset(self.data_dir, self.json_file) for _ in range(3)]
-
     def train_dataloader(self):
         return DataLoader(RepeatDataset(eeg_dataset, n_repeats), batch_size=self.batch_size, shuffle=True, num_workers=2)
 
@@ -158,12 +151,6 @@ class CNNModel(pl.LightningModule):
     def validation_step(self, batch, batch_idx):
         data = batch['data'].float()
         tensor_person = batch['person_id']
-        print(data.shape)
-        a = 9/0
-        # #для каждого батча
-        # _, predicted = torch.argmax(outputs, 1)
-        # correct = (predicted == tensor_person-1).sum().item()
-        # accuracy = correct / len(predicted)
 
         loss = F.cross_entropy(self(data), tensor_person - 1)
 
@@ -197,7 +184,7 @@ batch_size = 64
 
 data_module = EEGDataModule(data_dir, json_file, batch_size)
 
-#model = CNNModel()
+model = CNNModel()
 
 trainer = pl.Trainer(check_val_every_n_epoch=1,
 accelerator='gpu',
@@ -205,9 +192,12 @@ max_epochs=5,
 logger=pl.loggers.CSVLogger("/content/gdrive/MyDrive/logs/for32channels"),
 )
 
-#trainer.fit(model, data_module)
-model = CNNModel.load_from_checkpoint("/content/gdrive/MyDrive/logs/for32channels/lightning_logs/version_2/checkpoints/epoch=9-step=1950.ckpt")
-#model.eval()
 trainer.fit(model, data_module)
 
+#checkpoint training
+#model = CNNModel.load_from_checkpoint("/content/gdrive/MyDrive/logs/for32channels/lightning_logs/version_2/checkpoints/epoch=9-step=1950.ckpt")
+#model.eval()
+#trainer.fit(model, data_module)
+
+#test
 #trainer.test(model, data_module)
