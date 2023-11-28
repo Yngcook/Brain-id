@@ -16,6 +16,7 @@ import faiss
 import matplotlib.pyplot as plt
 
 #Define test model & Get data
+
 class CNNModel(pl.LightningModule):
     def __init__(self, d_model=256, input_channels=3, learning_rate=None, dropout_prob=0.5, num_classes=90):
         super(CNNModel, self).__init__()
