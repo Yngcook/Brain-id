@@ -15,7 +15,6 @@ from torchmetrics import Accuracy
 import faiss
 import matplotlib.pyplot as plt
 
-
 #Define test model & Get data
 
 class CNNModel(pl.LightningModule):
